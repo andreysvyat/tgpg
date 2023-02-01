@@ -17,16 +17,20 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws TelegramApiException {
 		TelegramBotsApi tgApi = new TelegramBotsApi(DefaultBotSession.class);
+
+		Properties tgConfig = readProperties();
+
 		TelegramLongPollingBot bot = new TelegramLongPollingBot() {
 			@Override
 			public String getBotToken() {
-				return "6079010690:AAF0S-Nk6RPVmWWXkH0f4r53bpYfroX4sug";
+				return tgConfig.getProperty("tg-token");
 			}
 
 			@Override
@@ -59,7 +63,7 @@ public class Main {
 
 			@Override
 			public String getBotUsername() {
-				return "mfa_clubs_test_bot";
+				return tgConfig.getProperty("tg-name");
 			}
 		};
 		tgApi.registerBot(bot);
@@ -87,5 +91,16 @@ public class Main {
 										.build())
 						.build()))
 				.build();
+	}
+
+	private static Properties readProperties(){
+		try(var is = Main.class.getClassLoader().getResourceAsStream("classpath:local.properties")){
+			Properties properties = new Properties();
+			properties.load(is);
+			return properties;
+		} catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 }
