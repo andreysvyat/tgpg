@@ -6,7 +6,9 @@
    let btnED = document.getElementById("btnED"); //получаем кнопку активировать/деактивировать
    let btnTS = document.getElementById("btnTS");
    let divUC = document.getElementById("user_card"); //получаем блок user_card
-   let inpTS = document.getElementById("test_input")
+   let inpTS = document.getElementById("test_input");
+
+   let profile = ((tg && tg.initData) ? tg.initData.user : null)
 
    btnTS.addEventListener('click', ()=> {
       console.log(inpTS.value)
@@ -44,19 +46,14 @@
       //при клике на основную кнопку отправляем данные в строковом виде
    });
 
-   let profName = document.createElement('p'); //создаем параграф
-   profName.innerText = `${tg.initDataUnsafe.user.first_name}
-   ${tg.initDataUnsafe.user.last_name}
-   ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
-   //выведем имя, "фамилию", через тире username и код языка
-   divUC.appendChild(profName); //добавляем
-
-   let userid = document.createElement('p'); //создаем еще параграф
-   userid.innerText = `${tg.initDataUnsafe.user.id}`; //показываем user_id
-   divUC.appendChild(userid); //добавляем
-
-
-//   работает только в attachment menu
-    let pic = document.createElement('img'); //создаем img
-    pic.src = "https://telegram.org/img/t_logo_sprite.svg"; //задаём src
-    divUC.appendChild(pic); //добавляем элемент в карточку
+   if (profile){
+        let profile_block = document.createElement('p'); //создаем параграф
+        profile_block.innerText =
+        `first name: ${profile.first_name}
+        last name: ${profile.last_name}
+        user name: ${profile.username}
+        lang: ${profile.language_code}
+        id: ${profile.user.id}`;
+        //выведем имя, "фамилию", через тире username и код языка
+        divUC.appendChild(profile_block); //добавляем
+   }
