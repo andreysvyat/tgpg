@@ -3,47 +3,20 @@
 <head>
    <script src="https://telegram.org/js/telegram-web-app.js"></script>
    <title>Document</title>
-   <style>
-      body {
-         display: flex;
-         flex-direction: column;
-         font-size: 18px;
-      }
-
-      .button {
-         border: none;
-         font-size: 18px;
-         margin: 10px;
-      }
-
-      #buttons{
-         height: inherit;
-      }
-
-      #user_card {
-         text-align: left;
-         color: var(--tg-theme-text-color)
-      }
-
-      #inp_desc {
-         color: var(--tg-theme-text-color)
-      }
-   </style>
+   <link href="./css/base.css" rel="stylesheet">
 </head>
 
 <body>
    <div class="answer">
       <p id="inp_desc">TEST INPUT</p>
-      <input type="text" id="test_input" />
+      <input type="text" id="test_input"/>
+      <button id="btnTS">TEST</button>
    </div>
    <div id="user_card">
    </div>
    <div id="buttons">
       <button id="btnSH">Show/Hide</button>
       <button id="btnED">Enable/Disable</button>
-   </div>
-   <div>
-      <button id="btnTS">TEST</button>
    </div>
    <script src="./js/actions.js"></script>
 </body>
