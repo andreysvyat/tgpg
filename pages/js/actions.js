@@ -6,9 +6,10 @@
    let btnED = document.getElementById("btnED"); //получаем кнопку активировать/деактивировать
    let btnTS = document.getElementById("btnTS");
    let divUC = document.getElementById("user_card"); //получаем блок user_card
-   let inpTS = document.getElementByID("test_input")
+   let inpTS = document.getElementById("test_input")
 
    btnTS.addEventListener('click', ()=> {
+      console.log(inpTS.value)
       tg.sendData(inpTS.value)
    })
 
