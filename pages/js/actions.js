@@ -2,9 +2,8 @@
 
    tg.MainButton.text = "Main"; //изменяем текст кнопки
 
-   let btnSH = document.getElementById("btnSH"); //получаем кнопку скрыть/показать
-   let btnED = document.getElementById("btnED"); //получаем кнопку активировать/деактивировать
    let btnTS = document.getElementById("btnTS");
+   let button_block = document.getElementById("buttons");
    let divUC = document.getElementById("user_card"); //получаем блок user_card
    let inpTS = document.getElementById("test_input");
 
@@ -15,6 +14,8 @@
       tg.sendData(inpTS.value)
    })
 
+   let btnSH = document.createElement("button"); //получаем кнопку скрыть/показать
+   btnSH.textContent = tg.MainButton.isVisible ? "HIDE MAIN" : "SHOW MAIN"
    btnSH.addEventListener('click', function(){ //вешаем событие на нажатие html-кнопки
       console.log("show button")
       if (tg.MainButton.isVisible){ //если кнопка показана
@@ -27,6 +28,8 @@
       }
    });
 
+   let btnED = document.createElement("button"); //получаем кнопку активировать/деактивировать
+   btnED.textContent = tg.MainButton.isActive ? "ENABLE MAIN" : "DISABLE MAIN"
    btnED.addEventListener('click', function(){ //вешаем событие на нажатие html-кнопки
       console.log("enable button")
       if (tg.MainButton.isActive){ //если кнопка показана
@@ -40,6 +43,8 @@
          btnED.textContent = "DISABLE MAIN"
       }
    });
+   button_block.appendChild(btnSH)
+   button_block.appendChild(btnED)
 
    Telegram.WebApp.onEvent('mainButtonClicked', function(){
       tg.sendData("some string that we need to send");
