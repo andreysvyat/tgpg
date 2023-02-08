@@ -58,5 +58,5 @@
 
 //   работает только в attachment menu
     let pic = document.createElement('img'); //создаем img
-    pic.src = tg.initDataUnsafe.user.photo_url; //задаём src
+    pic.src = "https://telegram.org/img/t_logo_sprite.svg"; //задаём src
     divUC.appendChild(pic); //добавляем элемент в карточку
