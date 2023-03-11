@@ -63,8 +63,3 @@ if (profile){
     divUC.appendChild(profile_block); //добавляем
 };
 
-function logURL(requestDetails) {
- console.log(`Loading: ${requestDetails.url}`);
-}
-
-console.log(chrome)
