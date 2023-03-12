@@ -12,7 +12,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
@@ -37,7 +41,8 @@ public class Main {
 
 	private static final Map<String, Supplier<ReplyKeyboard>> keyboards =
 			Map.ofEntries(
-					entry("web_page", Main::inlineWebPage)
+					entry("inline_web_app", Main::inlineWebPage),
+					entry("reply_web_app", Main::replyKeyboard)
 			);
 
 	public static void main(String[] args) throws TelegramApiException {
@@ -58,17 +63,19 @@ public class Main {
 			public void onUpdateReceived(Update update) {
 				try {
 					LOGGER.info("update {}", MAPPER.writer().withDefaultPrettyPrinter().writeValueAsString(update));
-					Optional.ofNullable(update.getMessage())
-							.map(Message::getText)
-							.map(keyboards::get)
-							.ifPresent(kbs -> sneakyExecute(SendMessage.builder()
-									.chatId(update.getMessage().getChatId())
-									.text(update.getMessage().getText())
-									.replyMarkup(kbs.get())
-									.build()));
+					processUpdate(update);
 				} catch (JsonProcessingException e) {
 					LOGGER.error(e.getMessage(), e);
 				}
+			}
+
+			private void processUpdate(Update update) {
+				resolveKb(update)
+						.ifPresent(kb -> sneakyExecute(SendMessage.builder()
+								.chatId(update.getMessage().getChatId())
+								.text(update.getMessage().getText())
+								.replyMarkup(kb)
+								.build()));
 			}
 
 			private <T extends Serializable> void sneakyExecute(BotApiMethod<T> method) {
@@ -82,14 +89,38 @@ public class Main {
 		tgApi.registerBot(bot);
 	}
 
+	private static Optional<ReplyKeyboard> resolveKb(Update update) {
+		return Optional.ofNullable(update.getMessage())
+				.map(Message::getText)
+				.map(keyboards::get)
+				.map(Supplier::get);
+	}
+
 	private static InlineKeyboardMarkup inlineWebPage() {
 		return InlineKeyboardMarkup.builder()
 				.keyboardRow(List.of(
 						InlineKeyboardButton.builder()
 								.text("link")
-								.url("https://andreysvyat.github.io/tgpg/pages/index.html?data=test")
+								.webApp(WebAppInfo.builder()
+										.url("https://andreysvyat.github.io/tgpg/pages/index.html?data=some_data")
+										.build())
 								.build()
 				))
+				.build();
+	}
+
+	private static ReplyKeyboardMarkup replyKeyboard(){
+		return ReplyKeyboardMarkup.builder()
+				.keyboard(List.of(new KeyboardRow(List.of(
+						KeyboardButton.builder()
+								.text("web_app")
+								.webApp(WebAppInfo.builder()
+										.url("https://andreysvyat.github.io/tgpg/pages/index.html?data=test")
+										.build())
+								.build()
+				))))
+				.resizeKeyboard(true)
+				.selective(true)
 				.build();
 	}
 

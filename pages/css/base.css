@@ -7,25 +7,24 @@ body{
 	font-size: 18px;
 }
 
-.button{
+button{
 	background: var(--tg-theme-button-color);
 	color: var(--tg-theme-button-text-color);
 	border: none;
 	font-size: 18px;
-	margin: 18px
+	margin: 18px;
+	display: inline
 }
 
-#user_card {
- text-align: left;
- color: var(--tg-theme-text-color);
+p{
+  display: inline;
+  margin-right: 18px
 }
 
-#inp_desc {
- color: var(--tg-theme-text-color);
- width: initial;
- display: inline;
+input{
+  display: inline;
 }
 
 div {
-  display: inline;
+  display: block;
 }
