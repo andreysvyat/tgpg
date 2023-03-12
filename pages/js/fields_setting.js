@@ -10,7 +10,6 @@ let cache = []
 
 apply.addEventListener('click',
     function sendData(){
-        console.log(String(cache))
         cache.pop()
         tg.sendData(f_name + ':' + String(cache))
     })
@@ -23,13 +22,11 @@ function create_item(){
     let input = document.createElement('input')
     input.setAttribute('type', 'text')
     input.addEventListener('input', function (evt) {
-             console.log(this.value)
              if (cache.length == 0){
                  cache.push(this.value)
              } else{
                  cache[cache.length - 1] = this.value
              }
-             console.log(String(cache))
          })
     input.setAttribute('id', 'text-input' + i)
     item.appendChild(input)
@@ -42,7 +39,6 @@ function add_btn(item){
     btn.textContent = "+"
     btn.addEventListener('click', function(){
         cache.push('tmp')
-        console.log(cache.length)
         let inp = item.getElementsByTagName('input')[0]
         let val_view = document.createElement('p')
         val_view.textContent = inp.value
