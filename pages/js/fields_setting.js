@@ -11,7 +11,8 @@ let cache = []
 apply.addEventListener('click',
     function sendData(){
         console.log(String(cache))
-        tg.sendData(String(cache))
+        cache.pop()
+        tg.sendData(f_name + ':' + String(cache))
     })
 
 function create_item(){
