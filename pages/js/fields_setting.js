@@ -10,7 +10,9 @@ let cache = []
 
 apply.addEventListener('click',
     function sendData(){
-        cache.pop()
+        if(cache[cache.length - 1] == 'tmp'){
+          cache.pop()
+        }
         tg.sendData(f_name + ':' + String(cache))
     })
 
