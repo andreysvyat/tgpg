@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Map.entry;
@@ -39,10 +39,11 @@ public class Main {
 		MAPPER.setSerializationInclusion(NON_NULL);
 	}
 
-	private static final Map<String, Supplier<ReplyKeyboard>> keyboards =
+	private static final Map<String, Function<String, ReplyKeyboard>> keyboards =
 			Map.ofEntries(
 					entry("inline_web_app", Main::inlineWebPage),
-					entry("reply_web_app", Main::replyKeyboard)
+					entry("reply_web_app", Main::replyKeyboard),
+					entry("set_fields", Main::setFieldsWebApp)
 			);
 
 	public static void main(String[] args) throws TelegramApiException {
@@ -92,11 +93,11 @@ public class Main {
 	private static Optional<ReplyKeyboard> resolveKb(Update update) {
 		return Optional.ofNullable(update.getMessage())
 				.map(Message::getText)
-				.map(keyboards::get)
-				.map(Supplier::get);
+				.map(it -> it.split(" "))
+				.map(it -> keyboards.get(it[0]).apply(it[1]));
 	}
 
-	private static InlineKeyboardMarkup inlineWebPage() {
+	private static InlineKeyboardMarkup inlineWebPage(String args) {
 		return InlineKeyboardMarkup.builder()
 				.keyboardRow(List.of(
 						InlineKeyboardButton.builder()
@@ -109,13 +110,28 @@ public class Main {
 				.build();
 	}
 
-	private static ReplyKeyboardMarkup replyKeyboard(){
+	private static ReplyKeyboardMarkup replyKeyboard(String args){
 		return ReplyKeyboardMarkup.builder()
 				.keyboard(List.of(new KeyboardRow(List.of(
 						KeyboardButton.builder()
 								.text("web_app")
 								.webApp(WebAppInfo.builder()
-										.url("https://andreysvyat.github.io/tgpg/pages/index.html?data=test")
+										.url("https://andreysvyat.github.io/tgpg/pages/index.html" + args)
+										.build())
+								.build()
+				))))
+				.resizeKeyboard(true)
+				.selective(true)
+				.build();
+	}
+
+	private static ReplyKeyboardMarkup setFieldsWebApp(String args){
+		return ReplyKeyboardMarkup.builder()
+				.keyboard(List.of(new KeyboardRow(List.of(
+						KeyboardButton.builder()
+								.text("web_app")
+								.webApp(WebAppInfo.builder()
+										.url("https://andreysvyat.github.io/tgpg/pages/web_app_setter.html" + args)
 										.build())
 								.build()
 				))))
